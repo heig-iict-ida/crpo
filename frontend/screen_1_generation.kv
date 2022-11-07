@@ -1,0 +1,82 @@
+#:import txt frontend.texts
+
+<StageGenerationScreen>:
+	groupby: "format"
+	togglegroup: togglegroup
+	_main_txt: _main_txt
+	_btn_gen: _btn_gen
+	_btn_next: _btn_next
+	_btn_edit: _btn_edit
+	_txt_poem: _txt_poem
+	_input_txt: _input_txt
+	_usr_input: _usr_input
+	BoxLayout:
+		orientation: 'horizontal'
+		BoxLayout:
+			size_hint: 5, 1
+			orientation: 'vertical'
+			Label:
+				id: _main_txt
+				size_hint: 1, 2
+			Label:
+				id: _input_txt
+				size_hint: 1, 1
+				text: "Enter the first words if you wish:"
+			TextInput:
+				id: _usr_input
+				multiline: False
+				font_size: 30 #ideal for 18-20 lines with keyboard (sonnet: 17, 4+4+3+3)
+				size_hint: 1, 1
+				use_handles: True
+			BoxLayout:
+				id: togglegroup
+				size_hint: 1, 9.5
+				orientation: 'vertical'
+				padding: [150, 50, 150, 50]
+				spacing: 50
+				ToggleButton:
+					group: root.groupby
+					text: "Quatrain"
+					state: 'down'
+					disabled: True #must be disabled if selected by default
+					on_press: root.btn_format(self, "quatrain")
+				ToggleButton:
+					group: root.groupby
+					text: "Haiku"
+					on_press: root.btn_format(self, "haiku")
+				ToggleButton:
+					group: root.groupby
+					text: "Sonnet"
+					on_press: root.btn_format(self, "sonnet")
+				ToggleButton:
+					group: root.groupby
+					text: "Free Verses"
+					on_press: root.btn_format(self, "freeform")
+			NavigationBar
+		BoxLayout:
+			size_hint: 5, 1
+			orientation: 'vertical'
+			Button:
+				size_hint: 1, 1
+				id: _btn_gen
+				disabled: False
+				text: "Generate a poem"
+				on_press: root.btn_gen_press(self)
+				on_release: root.btn_gen_release(self)
+			BoxLayout:
+				size_hint: 1, 1
+				orientation: 'horizontal'
+				Button:
+					id: _btn_edit
+					disabled: True
+					text: "Edit"
+					on_press: root.btn_edit(self)
+				Button:
+					id: _btn_next
+					disabled: True
+					text: "Continue with this poem"
+					on_press: root.btn_next(self)
+			Label:
+				id: _txt_poem
+				halign: 'left'
+				size_hint: 1, 10

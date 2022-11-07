@@ -1,0 +1,45 @@
+#:import txt frontend.texts
+
+<StageManualEditionScreen>:
+	_btn_next: _btn_next
+	_btn_return: _btn_return
+	_txt_poem: _txt_poem
+	_space: _space
+	BoxLayout:
+		orientation: 'horizontal'
+		BoxLayout:
+			size_hint: 5, 1
+			orientation: 'vertical'
+			Label:
+				size_hint: 1, 2
+				text: "Please help me to correct the poem. \nYou can also type a title if you wish."
+			BoxLayout:
+				size_hint: 1, 1
+				orientation: 'horizontal'
+				Button:
+					id: _btn_return
+					size_hint: 1, 1
+					text: "Cancel changes"
+					on_release: root.btn_return(self)
+				Button:
+					id: _btn_next
+					text: "Validate and continue"
+					on_release: root.btn_next(self)
+			NavigationBar
+			BoxLayout:
+				size_hint: 1, 8
+				orientation: 'horizontal'
+
+		BoxLayout:
+			size_hint: 5, 1
+			orientation: 'vertical'
+
+			TextInput:
+				id: _txt_poem
+				font_size: 22 #ideal for 18-20 lines with keyboard (sonnet: 17, 4+4+3+3)
+				size_hint: 1, 5
+				use_handles: True
+				font_name: 'Roboto'
+			Label:
+				id: _space
+				size_hint: 1, 0.001

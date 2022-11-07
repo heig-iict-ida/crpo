@@ -1,0 +1,80 @@
+#:import txt frontend.texts
+
+<NavigationBar>: #for production
+	size_hint: 0.001, 0.001
+
+<NavigationBarDevOnly>: #for developpment (rename me for prod)
+	orientation: 'horizontal'
+	size_hint: 1, 0.3
+	Button:
+		color: 0, 1, 1, 1
+		text: "DEV - back"
+		on_press: app.mv_back()
+	Button:
+		color: 0, 1, 1, 1
+		text: "DEV - next"
+		on_press: app.mv_next()
+
+<EntryScreen>
+	BoxLayout:
+		orientation: 'vertical'
+		padding: 10
+		NavigationBar
+		Label:
+			text: "Welcome to the process of assisted poetry creation."
+		Label:
+			text: "The system is loading."
+		Label:
+			text: "Please wait, thank you."
+
+
+<WelcomeScreen>:
+	feedback: feedback
+	BoxLayout:
+		orientation: 'vertical'
+		padding: 10
+		NavigationBar
+		Label:
+			size_hint: 1, 3
+			text: txt.txt_wel_title.get()
+			font_size: 96
+		Label:
+			size_hint: 1, 0.5
+			id: feedback
+			text: ""
+		Button:
+			size_hint: 1, 1
+			text: txt.txt_wel_btn_connect.get()
+			on_release: root.start_auto(self)
+			font_size: 64
+
+
+<StageFinalScreen>:
+	_txt_poem: _txt_poem
+	_user_id: _user_id
+	BoxLayout:
+		orientation: 'horizontal'
+		BoxLayout:
+			orientation: 'vertical'
+			Label:
+				size_hint: 1, 2
+				text: "CRPO : AI-assisted poetic creation"
+				font_size: 56
+			Label:
+				size_hint: 1, 2
+				text: "Your creation is now complete."
+			Label:
+				size_hint: 1, 4
+				text: "You can take a picture of it if you wish."
+			Label:
+				id: _user_id
+			Label:
+				text: "Thank you for authoring a poem with my AI!"
+			Button:
+				text: "Start a new poem"
+				on_press: root.restart(self)
+			NavigationBar
+		Label:
+			id: _txt_poem
+			markup: True
+			halign: 'left'

@@ -1,0 +1,70 @@
+#:import txt frontend.texts
+
+<StageRhymeScreen>:
+	groupby: "format"
+	togglegroup: togglegroup
+	_first_scheme_button: _first_scheme_button
+	_second_scheme_button: _second_scheme_button
+	_third_scheme_button: _third_scheme_button
+	_main_txt: _main_txt
+	_btn_gen: _btn_gen
+	_btn_next: _btn_next
+	_btn_edit: _btn_edit
+	_txt_poem: _txt_poem
+	BoxLayout:
+		orientation: 'horizontal'
+		BoxLayout:
+			size_hint: 5, 1
+			orientation: 'vertical'
+			Label:
+				id: _main_txt
+				size_hint: 1, 2
+			BoxLayout:
+				id: togglegroup
+				size_hint: 1, 9.5
+				orientation: 'vertical'
+				padding: [150, 50, 150, 50]
+				spacing: 50
+				ToggleButton:
+					group: root.groupby
+					id: _first_scheme_button
+					state: 'down'
+					disabled: True #must be disabled if selected by default
+					on_press: root.btn_format(self, self.text)
+				ToggleButton:
+					group: root.groupby
+					id: _second_scheme_button
+					on_press: root.btn_format(self, self.text)
+				ToggleButton:
+					group: root.groupby
+					id: _third_scheme_button
+					on_press: root.btn_format(self, self.text)
+			NavigationBar
+		BoxLayout:
+			size_hint: 5, 1
+			orientation: 'vertical'
+			Button:
+				size_hint: 1, 1
+				id: _btn_gen
+				disabled: False
+				text: "Generate rhymes"
+				on_press: root.btn_rhyme_press(self)
+				on_release: root.btn_rhyme_release(self)
+			BoxLayout:
+				size_hint: 1, 1
+				orientation: 'horizontal'
+				Button:
+					id: _btn_edit
+					disabled: True
+					text: "Edit"
+					on_press: root.btn_edit(self)
+				Button:
+					id: _btn_next
+					disabled: True
+					text: "Print"
+					on_press: root.btn_next(self)
+			Label:
+				id: _txt_poem
+				markup: True
+				halign: 'left'
+				size_hint: 1, 10

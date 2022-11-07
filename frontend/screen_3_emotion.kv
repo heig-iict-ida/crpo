@@ -1,0 +1,107 @@
+#:import txt frontend.texts
+
+<StageEmotionScreen>:
+	groupby: "format"
+	_main_txt: _main_txt
+	_btn_adapt: _btn_adapt
+	_btn_next: _btn_next
+	_btn_edit: _btn_edit
+	_txt_poem: _txt_poem
+	_thm_sld1: slider1
+	_thm_sld2: slider2
+	_thm_sld3: slider3
+	BoxLayout:
+		orientation: 'horizontal'
+		BoxLayout:
+			size_hint: 5, 1
+			orientation: 'vertical'
+			Label:
+				id: _main_txt
+				size_hint: 1, 2
+			Label:
+				size_hint: 1, 0.5
+			BoxLayout:
+				size_hint: 1, 8
+				orientation: 'horizontal'
+				id: _thm_layout
+				#joie, tristesse, aversion
+
+				BoxLayout:
+					orientation: 'vertical'
+					Label:
+						text: "Joy"
+					Slider:
+						size_hint: 1, 8
+						id: slider1
+						min: 0
+						max: 100
+						step: 10
+						orientation: 'vertical'
+						value: 30
+						value_track: True
+						value_track_width: '15dp'
+						on_value: root.sld_change(self)
+
+				BoxLayout:
+					orientation: 'vertical'
+					Label:
+						text: "Sadness"
+					Slider:
+						size_hint: 1, 8
+						id: slider2
+						min: 0
+						max: 100
+						step: 10
+						orientation: 'vertical'
+						value: 0
+						value_track: True
+						value_track_width: '15dp'
+						on_value: root.sld_change(self)
+
+				BoxLayout:
+					orientation: 'vertical'
+					Label:
+						text: "Anger"
+					Slider:
+						size_hint: 1, 8
+						id: slider3
+						min: 0
+						max: 100
+						step: 10
+						orientation: 'vertical'
+						value: 0
+						value_track: True
+						value_track_width: '15dp'
+						on_value: root.sld_change(self)
+
+			Label:
+				size_hint: 1, 0.5
+			NavigationBar
+		BoxLayout:
+			size_hint: 5, 1
+			orientation: 'vertical'
+			Button:
+				size_hint: 1, 1
+				id: _btn_adapt
+				disabled: False
+				text: "Adapt your poem"
+				on_press: root.btn_adapt_press(self)
+				on_release: root.btn_adapt_release(self)
+			BoxLayout:
+				size_hint: 1, 1
+				orientation: 'horizontal'
+				Button:
+					id: _btn_edit
+					disabled: True
+					text: "Edit"
+					on_press: root.btn_edit(self)
+				Button:
+					id: _btn_next
+					disabled: True
+					text: "Continue with this poem"
+					on_press: root.btn_next(self)
+			Label:
+				id: _txt_poem
+				markup: True
+				size_hint: 1, 10
+				halign: 'left'
