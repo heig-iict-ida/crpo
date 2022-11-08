@@ -204,8 +204,8 @@ class StageRhymeScreen(Screen):
 			result = make_it_rhyme(poem=self._base_poem,
 				models=self.main_model,
 				rhyming_scheme=scheme,
-				n_candidates=30, # or 100 ?
-				rime_syllables=2) # or 1
+				n_candidates=80, # between 30 and 100
+				rime_syllables=3) # between 1 and 4 (currently phonemes)
 		else:
 			text = self._base_poem \
 			+ "\nStage FOUR 4.0 : Rhymes"  \
