@@ -6,20 +6,20 @@ This system generates poems in English based on neural language models (GPT-2 an
 
 Create a conda environment: `conda create --name crpo python=3.8` and then activate it: `conda activate crpo`
 
+Clone or download this repo in a folder named `crpo` at the root of your home folder.  The paths in `utils/config.py` assume the files are at this location, but they can also be changed if the location is different.
+
 Install *torch*, *pytorch_transformers*, *transformers*, *kivy*, and *nltk*, either individually with `pip install` or by running: `conda env create -f crpo.yml`
 
-Clone or download this repo in a folder named `crpo` at the root of your home folder: the paths in `utils/config.py` assume this location, but they can also be adjusted for a different location.
+Download fine-tuned language models from [Switch Drive](https://drive.switch.ch/index.php/s/ICq06PM0od7cjrD), and unpack them into the `models` folder.  You should see 1 + 5 + 3 subfolders named 'gpt2-poetry-model-crpo' / 'art', 'life', 'love', 'nature', 'religion' / 'anger', 'happiness', 'sadness' (4.2 GB).
 
-Download language models from [Switch Drive](https://drive.switch.ch/index.php/s/ICq06PM0od7cjrD), and unpack them into the `models` folder.  You should see subfolders named 'gpt2-poetry-model-crpo', 'anger', 'art', 'happiness', 'life', 'love', 'nature', 'religion', and 'sadness' (4.2 GB).
+From the command line, run `python main.py`, which opens the CRPO GUI, which should then be self-explanatory.
 
-From a command line interface, run `python main.py` -- this should open a GUI for the system with explicit instructions.
-
-## Content of system folders
-  - `backend`: code for generating poems according to a selected form (number of stanzas and lines, length of lines) or modifying them according to a selected topic, emotion, or rhyming pattern
-  - `frontend`: code for displaying the screens using the Kivy framework (currently, the application opens in a window, but it can also be configured to run full screen, e.g. covering an entire touchscreen)
-  - `logs`: each generated poem is written in a timestampted JSON file, with all intermediary stages, for further analysis
-  - `models`: folder to store the GPT-2 and RoBERTa models (downloaded from https://drive.switch.ch/index.php/s/ICq06PM0od7cjrD and unzipped there) 
-  - `utils`: auxiliary functions and data
+## Content of folders
+  - `backend`: code to generate poems according to a selected form (number of stanzas and lines, length of lines) or to modify them according to a selected topic (among 5), emotion (among 3), or rhyming pattern
+  - `frontend`: code to display the GUI using the Kivy framework (note: the application can be configured to run full screen, e.g. on a touchscreen)
+  - `logs`: each poem is written in a timestampted JSON file, with all intermediary stages
+  - `models`: fine-tuned GPT-2 and RoBERTa models (downloaded from [Switch Drive](https://drive.switch.ch/index.php/s/ICq06PM0od7cjrD)) 
+  - `utils`: auxiliary functions and linguistic data
 
 ## Credits
 
