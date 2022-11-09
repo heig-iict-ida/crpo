@@ -92,7 +92,7 @@ DEVICE = -1
 
 # Andrei
 home = os.path.expanduser('~')
-cpao_root = os.path.join(home, 'CRPO')
+cpao_root = os.path.join(home, 'crpo')
 
 MODELS_GENERAL_PATH = os.path.join(cpao_root, 'models')
 MODELS_ROB_PATH = os.path.join(cpao_root, 'models')
