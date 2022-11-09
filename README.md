@@ -4,11 +4,10 @@ This system generates poems in English based on neural language models (GPT-2 an
 
 ## Installation instructions
 
-Create a conda environment: `conda create --name crpo python=3.8` and then activate it: `conda activate crpo`
+Clone or download this repo in a folder named `crpo` at the root of your home folder.  The paths in `utils/config.py` assume the files are at this location, but they can also be changed if the location is different: just change cpao_root = os.path.join(home, 'crpo') to your path.
 
-Clone or download this repo in a folder named `crpo` at the root of your home folder.  The paths in `utils/config.py` assume the files are at this location, but they can also be changed if the location is different.
-
-Install *torch*, *pytorch_transformers*, *transformers*, *kivy*, and *nltk*, either individually with `pip install` or by running: `conda env create -f crpo.yml`
+Either i) create a conda environment: `conda create --name crpo python=3.8`, activate it: `conda activate crpo`, and install *torch*, *pytorch_transformers*, *transformers*, *kivy*, and *nltk*, individually with `pip install`, 
+or ii) simply run `conda env create -f crpo.yml` to create the environment with the necessary packages and then `conda activate crpo`.
 
 Download fine-tuned language models from [Switch Drive](https://drive.switch.ch/index.php/s/ICq06PM0od7cjrD), and unpack them into the `models` folder.  You should see 1 + 5 + 3 subfolders named 'gpt2-poetry-model-crpo' / 'art', 'life', 'love', 'nature', 'religion' / 'anger', 'happiness', 'sadness' (4.2 GB).
 
