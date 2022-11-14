@@ -1,8 +1,7 @@
 from calendar import c
-from pytorch_transformers import GPT2Tokenizer, GPT2LMHeadModel
+from transformers import GPT2Tokenizer, GPT2LMHeadModel
 from string import punctuation
 from transformers import pipeline
-# from keras import backend as K
 import numpy as np
 import re
 from datetime import datetime
