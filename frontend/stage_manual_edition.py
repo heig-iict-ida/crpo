@@ -33,10 +33,10 @@ class StageManualEditionScreen(Screen):
 		self._txt_poem.focus = True
 
 	def btn_return(self, btn):
-		from screens.stage_1_generation import StageGenerationScreen
-		from screens.stage_2_theme import StageThemeScreen
-		from screens.stage_3_emotion import StageEmotionScreen
-		from screens.stage_4_rhyme import StageRhymeScreen
+		from frontend.stage_1_generation import StageGenerationScreen
+		from frontend.stage_2_theme import StageThemeScreen
+		from frontend.stage_3_emotion import StageEmotionScreen
+		from frontend.stage_4_rhyme import StageRhymeScreen
 
 		btn.disabled = True
 		origin = self.old_state.get("origin", -1)
