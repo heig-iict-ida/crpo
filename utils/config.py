@@ -71,7 +71,7 @@ MAIN_MODEL = ['gpt2-poetry-model-crpo']
 THEMATIC_ROBERTA_MODELS = ['love', 'art', 'nature', 'religion', 'life']
 EMOTION_ROBERTA_MODELS = ['happiness', 'sadness', 'anger']
 
-THEMATIC_MODELS = ['amour_classified',  # These are DPRECATED in the english version of the system
+THEMATIC_MODELS = ['amour_classified',  # deprecated in the English version
                    'art_classified', 
                    'nature_classified', 
                    'spiritualite_classified', 
@@ -97,7 +97,7 @@ cpao_root = os.path.join(home, 'crpo')
 MODELS_GENERAL_PATH = os.path.join(cpao_root, 'models')
 MODELS_ROB_PATH = os.path.join(cpao_root, 'models')
 OUTPUT_DIRECTORY_FILE = os.path.join(cpao_root, 'logs')
-RIME_PICKLE_FILE = os.path.join(cpao_root, 'utils/data', 'cons_rime_eng.pickle')
+RIME_PICKLE_FILE = os.path.join(cpao_root, 'utils/data', 'rhyming_dictionaries.pickle')
 EMOTIONS_WORDS_LIST_FILE = os.path.join(cpao_root, 'utils/data', 'emotion_word_list.txt')
 EMOTIONS_ASSOCIATIONS_FILE = os.path.join(cpao_root, 'utils/data', 'word_emotion_associations_english.npy')
 THEMES_WORDS_LIST_FILE = os.path.join(cpao_root, 'utils/data', 'theme_word_list.txt')
