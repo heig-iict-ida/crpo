@@ -1,286 +1,264 @@
-from kivy.uix.screenmanager import Screen
-from kivy.lang import Builder
-from kivy.clock import Clock
-
-from utils.utils import log, mv_back, mv_next, mv_next_create
-from frontend.stages_management import StageFinalScreen
-from frontend.stage_manual_edition import StageManualEditionScreen
-
+import torch
+import numpy as np
+import re
+from datetime import datetime
+import random
 import utils.config as conf
-if (conf.prod_models):
-	from backend.make_it_rhyme import make_it_rhyme
+import nltk
+#nltk.download('punkt') # must run it *once* to download resource
+from nltk.tokenize import word_tokenize
+import pickle
+import difflib
+import random
 
-with open('frontend/widgets.kv', encoding='utf8') as f:
-	Builder.load_string(f.read())
-with open('frontend/screen_4_rhyme.kv', encoding='utf8') as f:
-	Builder.load_string(f.read())
-
-stage_name = "4.0-FOUR-RHYME"
-#STAGE FOUR (4.0)
-#Rhymes
-class StageRhymeScreen(Screen):
-	_scheme = ""
-	first_scheme = ""
-	second_scheme = ""
-	third_scheme = ""
-	params = ""
-	txt_intro = "Choose the rhyming scheme that I shall\napply to the poem."
-	txt_wait = "Generating rhymes: please wait.\nI am busy with complex calculations."
-	txt_wait_poem = "Creation in progress..."
-	txt_result = "Here is my proposal: it may not be perfect,\nso feel free to edit it one last time."
+from backend.correct_with_dictionary import postprocessing
+from backend.generer_poesie import flatten
 
 
-	def __init__(self, user, main_model, thematic_models, emotion_models, state, **kwargs):
-		super(StageRhymeScreen, self).__init__(**kwargs)
-		self.user = user
-		self.main_model = main_model
-		self.thematic_models = thematic_models
-		self.emotion_models = emotion_models
-		self._main_txt.text = self.txt_intro
-		self._base_poem = state.get("poem", "")
-		self._adapted_poem = state.get("adapted_poem", state.get("poem", ""))
-		self._txt_poem.text = state.get("displayed_adapted_poem", state.get("poem", ""))
-		self._btn_edit.disabled = state.get("buttons_disabled", False)
-		self._btn_next.disabled = state.get("buttons_disabled", False)
-		self.setSchemeFromPoemStructure(self._base_poem)
-		self.old_state = state # Used to remember previous slider values for typhography screen
-
-		self.user.write_file_stage_start(stage_name, self._adapted_poem)
-
-	def setSchemeFromPoemStructure(self, poem):
-		strophes = poem.split("\n\n")
-		current_char = "A"
-		current_scheme = ""
-
-		for i, strophe in enumerate(strophes):
-			lines = strophe.split("\n")
-			length = len(lines)
-
-			if length == 1:
-				self.first_scheme += current_char			# A
-				self.second_scheme += current_char			# A
-				self.third_scheme += current_char			# A
-
-				if current_char != "Z":
-					current_char = chr(ord(current_char) + 1)
-
-			elif length == 2:
-				self.first_scheme += current_char + \
-					current_char							# AA
-				self.second_scheme += current_char + \
-					current_char							# AA
-				self.third_scheme += current_char + \
-					current_char							# AA
-
-				if current_char != "Z":
-					current_char = chr(ord(current_char) + 1)
-
-			elif length == 3:
-				# Haiku hack
-				if self.second_scheme == "ABA ":
-					self.first_scheme += "CDC"
-					self.second_scheme += "BCB"
-					self.third_scheme += "BAB"
-					current_char = "E"
-				else:
-					first_char = current_char
-					if current_char != "Z":
-						second_char  = chr(ord(first_char) + 1)
-					else:
-						second_char = "Z"
-
-					self.first_scheme += first_char + \
-						second_char + \
-						first_char								# ABA
-					self.second_scheme += first_char + \
-						second_char + \
-						first_char								# ABA
-					self.third_scheme += first_char + \
-						second_char + \
-						first_char								# ABA
-
-					if first_char != "Z" and second_char != "Z":
-						current_char = chr(ord(current_char) + 2)
-
-			elif length >= 4:
-				first_char = current_char
-				if current_char != "Z":
-					second_char  = chr(ord(first_char) + 1)
-				else:
-					second_char = "Z"
-
-				self.first_scheme += first_char + \
-					second_char + \
-					first_char + \
-					second_char								# ABAB
-				self.second_scheme += first_char + \
-					second_char + \
-					second_char + \
-					first_char								# ABBA
-				self.third_scheme += first_char + \
-					first_char + \
-					second_char + \
-					second_char								# AABB
-
-				if first_char != "Z" and second_char != "Z":
-					current_char = chr(ord(current_char) + 2)
-
-				length -= 4
-				while (length > 0):
-					if (length % 2 == 0):
-						self.first_scheme += current_char + \
-							current_char					# ...CC
-						self.second_scheme += current_char + \
-							current_char					# ...CC
-						self.third_scheme += current_char + \
-							current_char					# ...CC
-						length -= 2
-					else:
-						self.first_scheme += current_char	# ...C
-						self.second_scheme += current_char	# ...C
-						self.third_scheme += current_char	# ...C
-						length -= 1
-
-					if current_char != "Z":
-						current_char = chr(ord(current_char) + 1)
-
-			self.first_scheme += " "
-			self.second_scheme += " "
-			self.third_scheme += " "
-
-		self._first_scheme_button.text = self.first_scheme.strip()
-		self._second_scheme_button.text = self.second_scheme.strip()
-		self._third_scheme_button.text = self.third_scheme.strip()
-
-		self._scheme = self._first_scheme_button.text
-
-		if (self.third_scheme == self.second_scheme):
-			self._third_scheme_button.text = ""
-			self._third_scheme_button.disabled = True
-		if (self.second_scheme == self.first_scheme):
-			self._second_scheme_button.text = ""
-			self._second_scheme_button.disabled = True
-
-	# DEPRECATED
-	def _notify_change_settings(self):
-		if (self._scheme != ""): #enable send only if a format has been choosen
-			self._btn_gen.disabled = False
-
-	def btn_format(self, btn, txt):
-		self._scheme = txt
-		self._notify_change_settings()
-
-		#disallow unselection of just selected radio button
-		for i in self.togglegroup.children:
-			if i.text != "":
-				i.disabled = False
-		btn.disabled = True
-
-	def btn_rhyme_press(self, btn):
-		btn.disabled = True
-		self._btn_edit.disabled = True
-		self._btn_next.disabled = True
-		self.ui_able()
-
-		self._main_txt.text = self.txt_wait
-		self._txt_poem.text = self.txt_wait_poem
-
-	def btn_rhyme_release(self, btn):
-		Clock.schedule_once(self.rhyme, 0.1)
-
-	def ui_able(self, disabled = True):
-		for i in self.togglegroup.children:
-			i.disabled = disabled
-			#disable the currently selected toggle button to mimic real radio button (no-selection is impossible)
-			if (i.state == 'down' and disabled == False):
-				i.disabled = True
-
-	def rhyme(self, dt):
-		text = ""
-		scheme = str(self._scheme).upper()
-		self.params = '['+ scheme + ']'
-		if (conf.prod_models):
-			#actual interaction (with actual values for format and mixing numbers)
-			result = make_it_rhyme(poem=self._base_poem,
-				models=self.main_model,
-				rhyming_scheme=scheme,
-				n_candidates=50, # or 100 ?
-				rime_syllables=3) # or 1
-		else:
-			text = self._base_poem \
-			+ "\nStage FOUR 4.0 : Rhymes"  \
-			+ "\n Rhyming scheme:" + scheme
-			result = (text, text)
-
-		self._btn_gen.disabled = False
-		self._btn_edit.disabled = False
-		self._btn_next.disabled = False
-		self.ui_able(disabled = False)
-
-		self._txt_poem.text = result[0]
-		self._adapted_poem = result[1]
-		self._main_txt.text = self.txt_result
-		self._btn_gen.text = "Regenerate the rhymes"
-
-		# write the intermediate result from back-end
-		self.user.write_file_stage_interm(stage_name, self._adapted_poem, v_param = self.params)
+def get_rhyming_dictionaries(path=conf.RIME_PICKLE_FILE):
+    """Dictionaries of {word: [perfect_rhyme, assonant_rhyme]},
+    and {perfect_rhyme : [words..]} and {assonant_rhyme : [words]}
+    """
+    pickle_in = open(path,"rb")
+    word2rhymes, perfect_rhyme2words, assonant_rhyme2words = pickle.load(pickle_in)
+    return word2rhymes, perfect_rhyme2words, assonant_rhyme2words
 
 
-	def btn_edit(self, btn):
-		btn.disabled = True
-
-		#No write needed here - see stage_1 for full comment.
-
-		#move forward to next stage
-		_name = "StageManualEditionScreen"
-		current_state = {
-			"poem": self._adapted_poem,
-			"base_poem": self._base_poem,
-			"adapted_poem": self._adapted_poem,
-			"displayed_adapted_poem": self._txt_poem.text,
-			"origin": 4
-		}
-		mv_next_create(self.manager,
-			_name,
-			StageManualEditionScreen(name=_name,
-				user=self.user,
-				main_model=self.main_model,
-				thematic_models=self.thematic_models,
-				emotion_models=self.emotion_models,
-				state=current_state))
+def tokenize_poem (text):
+    """
+    Tokenize poem into strophes and verses.
+    """
+    structured = []
+    strophes = text.split('\n\n')
+    for s in strophes:
+        strophe = []
+        verses = s.split('\n')
+        for v in verses:
+            strophe += [v]
+        structured += [strophe]
+    return structured
 
 
-	
-	def btn_next(self, btn):
-		btn.disabled = True
+def process_verse (verse):
+    """
+    Given a verse, returns its final punctuation (if any), last word, and remainder
+    of verse without either of the two.
+    """
 
-		self._txt_poem.text = self._txt_poem.text.replace("[u]", "")
-		self._txt_poem.text = self._txt_poem.text.replace("[/u]", "")
-		
-		#Write the current version as definitive.
-		#TWO writes are needed for the exact same reason as in the start (see above)
-		#Keep in mind that the params stored here may, or may not, be the one suggested by the system at first, 
-        # or some results of a "reset" (new suggestion button hit), or used-customized.
-		self.user.write(self._adapted_poem, v_param = self.params, forward = True)
-		#This triggers finalisation of the log.
-		self.user.write_file_stage_end(stage_name, self._txt_poem.text, "FINAL")
-        
-		#move forward to next stage
-		_name = "StageFinalScreen"
-		current_state = {
-			"poem": self._adapted_poem,
-			"poem_format": self._txt_poem.text,
-			"graisse": 10,
-			"contraste": 50,
-			"rigidite": 0,
-			"font": "utils/fonts/static/dlgx-010-050-000.ttf"
-		}
-		mv_next_create(self.manager,
-			_name,
-			StageFinalScreen(name=_name,
-				user=self.user,
-				main_model=self.main_model,
-				thematic_models=self.thematic_models,
-				emotion_models=self.emotion_models,
-				state=current_state))
-        
+    punctuation = ['.', ',', ',', ':', ';', '!', '?', ' ', '-']
+
+    tok_verse = word_tokenize(verse, language='english')
+    # Remember punctuation
+    if tok_verse[-1] in punctuation:
+        original_punctuation = [tok_verse[-1]]
+    else:
+        original_punctuation = ''
+
+    # Get last word
+    if tok_verse[-1] in punctuation:
+        if len(tok_verse) > 1:
+            last_word = tok_verse [-2]
+        else:
+            last_word = ''
+    else:
+        last_word = tok_verse [-1]
+    if "'" in last_word:
+        last_word = last_word.split("'")[1]
+
+    # Get new verse
+    try:
+        while tok_verse[-1] in punctuation:
+            tok_verse = tok_verse[:-1]
+    except IndexError:
+        pass
+
+    new_verse = ' '.join(tok_verse[:-1])
+    new_verse = re.sub (r" ’ ",r'’', new_verse)
+    new_verse = re.sub (r" \.", '.', new_verse)
+
+    return original_punctuation, last_word, new_verse
+
+
+def get_candidate_rhymes(word_to_replace, word, rhyming_dicts):
+    """
+    Given a word and three dictionaries (word->rhymes, perfect_rhymes->words,
+    assonant_rhymes->words), checks if word is in first one, and if not finds
+    the most similar word which is in the first one.
+    Returns its perfect rhymes (if available) or assonant or empty list.
+    """
+    word2rhymes, perfect_rhyme2words, assonant_rhyme2words = rhyming_dicts
+    
+    word = word.lower()
+    if word not in word2rhymes:  # find similar words
+        try:
+            word = difflib.get_close_matches(word, list(word2rhymes.keys()))[0]
+        except:
+            try:
+                word = difflib.get_close_matches(word, list(word2rhymes.keys()), cutoff=0.25)[0]
+            except:
+                word = random.sample(word2rhymes.keys(), 1)[0]
+
+    perfect_rhyme = word2rhymes[word][0]
+    perfect_rhyme_candidates = [w for w in perfect_rhyme2words[perfect_rhyme] if w != word]
+    # check if there are words that have perfect rhyme
+    if len(perfect_rhyme_candidates) != 0:
+        rhyme = perfect_rhyme
+        candidates = perfect_rhyme_candidates
+    # if not, check if there are words that have assonant rhyme
+    else:
+        assonant_rhyme = word2rhymes[word][1]
+        assonant_rhyme_candidates = [w for w in assonant_rhyme2words[assonant_rhyme] if w != word]
+        if len(assonant_rhyme_candidates) != 0:
+            rhyme = assonant_rhyme
+            candidates = assonant_rhyme_candidates
+        # if not, return original word
+        else:
+            rhyme = ""
+            candidates = []
+    
+    return rhyme, candidates
+
+
+def seq_prob(verse_idx, strophe, old_verse, candidate, models):
+    """
+    Calculates probability of a sequence of old_verse + ending (candidate) word.
+    """
+    candidate_in_context = []
+    for i in range(len(strophe)):
+        candidate_in_context.append("<start>" + strophe[i])
+    candidate_in_context[verse_idx] = "<start>" + old_verse + " " + candidate
+    candidate_in_context = "\n".join(candidate_in_context) 
+    tokenize_input = models[2].tokenize(candidate_in_context)
+    tensor_input = torch.tensor([models[2].convert_tokens_to_ids(tokenize_input)])
+    loss = models[1](tensor_input, labels=tensor_input)
+    return -loss[0].item()
+
+
+def apply_rhyming_scheme(poem,
+                          models,
+                          rhyming_scheme,
+                          outfile_directory=conf.OUTPUT_DIRECTORY_FILE,
+                          print_into_file=False,
+                          d=False,
+                          n_candidates=30):
+    """
+    Gets the poem from the previous stage, and according to the rhyming scheme
+    (e.g., ABBA ABBA CCD EDE, etc.), changes sends of lines to make them rhyme.
+    n_candidates : how many candidate words to rank with the language model
+    print_into_file : used to debug only (saves to disk before & after rhyme)
+    d=True : print of detailed debug info in terminal
+    """
+    punctuation = ['.', ',', ',', ':', ';', '!', '?', ' ', '-']
+    tok_poem = tokenize_poem(poem) # segment poem into stanzas and verses
+
+    new_poem = []
+    new_poem_markup = []
+    used_candidates = []
+    strophes_scheme = rhyming_scheme.split(' ')
+    
+    rhyming_dicts = get_rhyming_dictionaries() # loads 3 dictionaries
+    
+    all_rhymes = dict([(c, '') for c in set(rhyming_scheme) if not c == ' '])
+
+    for strophe_idx in range(len(tok_poem)):
+        strophe = tok_poem[strophe_idx]
+        new_strophe = []
+        new_strophe_markup =[]
+
+        for verse_idx in range(len(strophe)):
+            full_old_verse = strophe[verse_idx]
+            all_probs = []
+            punct, word, old_verse = process_verse(full_old_verse)
+            verse_scheme = strophes_scheme[strophe_idx][verse_idx]
+            if d: 
+                print('\tStanza: {} Verse: {} Rhyme: {}'.format(strophe_idx+1, verse_idx+1, verse_scheme))
+                print(all_rhymes[verse_scheme])
+
+            if all_rhymes[verse_scheme] == '':  # if it is a new rhyme leave it as is
+                all_rhymes[verse_scheme] = word
+                final_word = word
+                final_word_markup = word
+                rime = 'nochange'
+            else: # if it is not a new rhyme
+                rime, candidates = get_candidate_rhymes(word, all_rhymes[verse_scheme], rhyming_dicts)
+                if d: print("#1a", candidates)
+                candidates = [i for i in candidates if i not in used_candidates and len(i) > 1]
+                if d: print("#1b", candidates)
+
+                if len(candidates) == 0:
+                    candidates = [word]
+
+                if len(candidates) < n_candidates:
+                    n_candidates = len(candidates)
+
+                random.shuffle(candidates)
+                random_candidates = random.sample(candidates, n_candidates)
+
+                if d: 
+                    print('\t\tALL CANDIDATES:', len(candidates), '\n')
+                    if len(candidates) < 100:
+                        print('\t\t', word, rime, candidates, '\n')
+
+                for candidate in random_candidates:
+                    prob = seq_prob(verse_idx, strophe, old_verse, candidate, models)
+                    all_probs += [prob]
+
+                best = np.argmax(all_probs) # np.argsort(all_probs)[::-1] # why sort if we only use max?
+                best_prob = all_probs[best]
+                final_word = random_candidates[best]
+                final_word_markup = "[u]" + final_word + "[/u]"
+
+            if len(punct) != 0:
+                best_riming_verse = old_verse + ' ' + ''.join(final_word) + punct[0]
+                best_riming_verse_markup = old_verse + ' ' + ''.join(final_word_markup) + punct[0]
+            else:
+                best_riming_verse = old_verse + ' ' + ''.join(final_word)
+                best_riming_verse_markup = old_verse + ' ' + ''.join(final_word_markup)
+
+            used_candidates += [final_word]
+
+            best_riming_verse += '\n'
+            best_riming_verse_markup += '\n'
+
+            new_strophe += [best_riming_verse]
+            new_strophe_markup += [best_riming_verse_markup]
+
+        new_strophe += ['\n']
+        new_strophe_markup += ['\n']
+
+        new_poem += [new_strophe]
+        new_poem_markup += [new_strophe_markup]
+
+    raw = ''.join((flatten(new_poem)))
+    new_poem = postprocessing(raw, punctuation)
+
+    raw_markup = ''.join((flatten(new_poem_markup)))
+    new_poem_markup = postprocessing(raw_markup, punctuation)
+
+    if d: 
+        print('NEW POEM\n\n' + new_poem + '\n' + '~'*50 + '\n' + 'OLD POEM\n\n' + poem)
+    if print_into_file:
+        now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S_RHYME") #Windows compatible
+        with open(outfile_directory + now + '.txt', 'w') as f:
+            f.write('NEW POEM\n\n' + new_poem + '\n' + '~'*50 + '\n' + 'OLD POEM\n\n' + poem)
+
+    return (new_poem_markup, new_poem)
+
+
+def make_it_rhyme(poem,
+                     models,
+                     rhyming_scheme,
+                     outfile_directory=conf.OUTPUT_DIRECTORY_FILE,
+                     n_candidates=30,
+                     rime_syllables=2):
+    """
+    Calls apply_rhyming_scheme() with correct scheme and model mixing %s parameters.
+    models: list of list of built models, their vocabs, and their indices_chars.
+    In reality, all arguments of make_it_rhyme are passed identically, except the model (pass only pipeline). 
+    """
+    return apply_rhyming_scheme(poem,
+                               models[0],  # called from 'stage_4_rhyme.py' with only the general model (GPT-2)
+                                           # 'models' has [pipeline, model, tokenizer] so we keep only the pipeline (?)
+                               rhyming_scheme,
+                               outfile_directory,
+                               n_candidates=n_candidates)
