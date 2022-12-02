@@ -2,7 +2,7 @@ name: crpo
 channels:
   - defaults
 dependencies:
-  - pytorch==1.12.1
+  - pytorch::pytorch==1.12.1
   - cudatoolkit=10.2
   - nltk
   - transformers
