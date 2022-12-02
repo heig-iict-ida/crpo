@@ -2,10 +2,11 @@ name: crpo
 channels:
   - defaults
 dependencies:
+  - pytorch==1.12.1
+  - cudatoolkit=10.2
+  - nltk
+  - transformers
   - pip
   - pip:
-    - torch
-    - transformers
     - kivy
-    - nltk
 prefix: C:\ProgramData\Miniconda3\envs\crpo
