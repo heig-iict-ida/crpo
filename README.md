@@ -24,11 +24,15 @@ From the command line, run `python main.py`, which opens the CRPO GUI, which sho
 
 The system is described in the following articles:
 
-Andrei Popescu-Belis, Àlex R. Atrio, Valentin Minder, Aris Xanthos, Gabriel Luthier, Simon Mattei, and Antonio Rodriguez. 2022. [Constrained Language Models for Interactive Poem Generation](https://aclanthology.org/2022.lrec-1.377). *Proceedings of the 13th Language Resources and Evaluation Conference (LREC)*, pages 3519–3529, Marseille, France. European Language Resources Association.
+   - Andrei Popescu-Belis, Àlex R. Atrio, Valentin Minder, Aris Xanthos, Gabriel Luthier, Simon Mattei, and Antonio Rodriguez. 2022. [Constrained Language Models for Interactive Poem Generation](https://aclanthology.org/2022.lrec-1.377). *Proceedings of the 13th Language Resources and Evaluation Conference (LREC)*, pages 3519–3529, Marseille, France. European Language Resources Association.
 
-The models for the English version were replaced with Transformer-based ones by [Teo Ferrari](https://www.linkedin.com/in/teo-ferrari-0a4009176/) as part of his Bachelor thesis at HEIG-VD, supervised by [Andrei Popescu-Belis](http://iict-space.heig-vd.ch/apu/).  Rhyming for English was updated by [Àlex R. Atrio](https://github.com/AlexRAtrio).  Rhyming patterns can also be learned by the GPoeT model, as shown in the following article:
+The models for the English version were replaced with Transformer-based ones by [Teo Ferrari](https://www.linkedin.com/in/teo-ferrari-0a4009176/) as part of his [Bachelor thesis at HEIG-VD](https://gaps.heig-vd.ch/public/diplome/rapports.php?id=6763), supervised by [Andrei Popescu-Belis](http://iict-space.heig-vd.ch/apu/).  
 
-Popescu-Belis A., Atrio A.R., Bernath B., Boisson E., Ferrari T., Theimer-Lienhard X., & Vernikos G. 2023. [GPoeT: a Language Model Trained for Rhyme Generation on Synthetic Data](https://aclanthology.org/2023.latechclfl-1.2/). *Proceedings of the 6th Joint SIGHUM Workshop on Computational Linguistics for Cultural Heritage, Social Sciences, Humanities and Literature (LaTeCH-CLfL)*, EACL 2023, Dubrovnik, Croatia.
+Rhyming for English was updated by [Àlex R. Atrio](https://github.com/AlexRAtrio).  
+
+Rhyming patterns can also be learned by the GPoeT model, as shown in the following article:
+
+   - Popescu-Belis A., Atrio A.R., Bernath B., Boisson E., Ferrari T., Theimer-Lienhard X., & Vernikos G. 2023. [GPoeT: a Language Model Trained for Rhyme Generation on Synthetic Data](https://aclanthology.org/2023.latechclfl-1.2/). *Proceedings of the 6th Joint SIGHUM Workshop on Computational Linguistics for Cultural Heritage, Social Sciences, Humanities and Literature (LaTeCH-CLfL)*, EACL 2023, Dubrovnik, Croatia.
 
 CRPO was originally designed for the [Digital Lyric exhibition](https://lyricalvalley.org/digital-lyric-exposition/) held in Morges, Switzerland, in spring 2020.  The exhibition was curated by [Antonio Rodriguez](https://www.unil.ch/fra/antoniorodriguez) (University of Lausanne) and [Sarah Kenderdine](https://people.epfl.ch/sarah.kenderdine) (EPFL).  The event showcased artworks and devices demonstrating novel relations between poetry and technology.
 
