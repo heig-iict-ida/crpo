@@ -4,7 +4,7 @@ This system generates poems in English based on neural language models (GPT-2 an
 
 ## Installation instructions
 
-Clone or download this repo in a folder named `crpo` at the root of your home folder.  The paths in `utils/config.py` assume this location, but this can also be changed by editing the string 'crpo' in the command `cpao_root = os.path.join(home, 'crpo')` into your own path.
+Clone or download this repo in a folder named `crpo` in your *home folder*.  The paths in `utils/config.py` assume this location, but this can also be changed by editing the string 'crpo' in the command `cpao_root = os.path.join(home, 'crpo')` into your own path.
 
 Run `conda env create -f crpo.yml` to create the environment with the necessary packages, and activate the environment with `conda activate crpo`.  You can also create a conda environment with `conda create --name crpo python=3.8`, activate it, and install *torch*, *transformers*, *kivy*, and *nltk*, manually with `pip install`.
 
