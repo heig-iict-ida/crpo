@@ -4,19 +4,18 @@ This system generates poems in English based on neural language models (GPT-2 an
 
 ## Installation instructions
 
-Clone or download this repo in a folder named `crpo` at the root of your home folder.  The paths in `utils/config.py` assume the files are at this location, but they can also be changed if the location is different: just change the string 'crpo' in the command `cpao_root = os.path.join(home, 'crpo')` into your own path.
+Clone or download this repo in a folder named `crpo` at the root of your home folder.  The paths in `utils/config.py` assume this location, but this can also be changed by editing the string 'crpo' in the command `cpao_root = os.path.join(home, 'crpo')` into your own path.
 
-Either: (1) create a conda environment with `conda create --name crpo python=3.8`, activate it with `conda activate crpo`, and install *torch*, *transformers*, *kivy*, and *nltk*, individually with `pip install`, or (2) simply run `conda env create -f crpo.yml` to create the environment with the necessary packages and then activate it with `conda activate crpo`.
+Run `conda env create -f crpo.yml` to create the environment with the necessary packages, and activate the environment with `conda activate crpo`.  You can also create a conda environment with `conda create --name crpo python=3.8`, activate it, and install *torch*, *transformers*, *kivy*, and *nltk*, manually with `pip install`.
 
-The general language model [gpt2-poetry-model-crpo](https://huggingface.co/andreipb/gpt2-poetry-model-crpo) will be dowloaded from Huggingface on the first use of the system, but you still have to download manually eight fine-tuned language models from [Switch Drive](https://drive.switch.ch/index.php/s/ICq06PM0od7cjrD), and unpack them into respective subfolders within the `models` folder: 'art', 'life', 'love', 'nature', 'religion', 'anger', 'happiness', 'sadness' (3.5 GB total).
+The language models will be dowloaded automatically from [Huggingface](https://huggingface.co/models) upon the first use, thanks to the [Transformers](https://huggingface.co/docs/transformers/index) library.  There is one general model used for generation ([gpt2-poetry-model-crpo](https://huggingface.co/andreipb/gpt2-poetry-model-crpo)), five topic-specific ones used for editing ([roberta-poetry-art-crpo](https://huggingface.co/andreipb/roberta-poetry-art-crpo), [-life-](https://huggingface.co/andreipb/roberta-poetry-life-crpo), [-love-](https://huggingface.co/andreipb/roberta-poetry-love-crpo), [-nature-](https://huggingface.co/andreipb/roberta-poetry-nature-crpo), and [-religion-](https://huggingface.co/andreipb/roberta-poetry-religion-crpo)), and three emotion-specific ones also for editing ([-happiness-](https://huggingface.co/andreipb/roberta-poetry-happiness-crpo), [-sadness-](https://huggingface.co/andreipb/roberta-poetry-sadness-crpo), and [-anger-](https://huggingface.co/andreipb/roberta-poetry-anger-crpo)), for a total of 4.2 GB.
 
-From the command line, run `python main.py`, which opens the CRPO GUI, which should then be self-explanatory.
+From the command line, run `python main.py`, which opens the GUI, which should then be self-explanatory.
 
 ## Content of folders
   - `backend`: code to generate poems according to a selected form (number of stanzas and lines, length of lines) or to modify them according to a selected topic (among 5), emotion (among 3), or rhyming pattern
   - `frontend`: code to display the GUI using the Kivy framework (the application can be configured to run full screen, for instance for a touchscreen)
   - `logs`: each poem is written in a timestampted JSON file, with all intermediary stages
-  - `models`: fine-tuned GPT-2 and RoBERTa models (empty folder, models to be downloaded from [Switch Drive](https://drive.switch.ch/index.php/s/ICq06PM0od7cjrD))
   - `rhyming`: a function and a dictionary to measure whether two verses rhyme or not (see Section 2 of the [GPoeT paper](https://aclanthology.org/2023.latechclfl-1.2/))
   - `utils`: auxiliary functions and linguistic data
 
