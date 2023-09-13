@@ -16,7 +16,7 @@ def load_models (models, path):
     Loads and builds the trained language models, their vocab and indices, given path and models' names.
     """
     built_models = []
-    model_path = os.path.join(path, models[0])
+    model_path = path + '/' + models[0] # using Huggingface name instead of the local: os.path.join(path, models[0])
 	
     model = GPT2LMHeadModel.from_pretrained(model_path)
     tokenizer = GPT2Tokenizer.from_pretrained(model_path)
