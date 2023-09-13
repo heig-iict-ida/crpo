@@ -16,17 +16,15 @@ def load_models (models, path):
     Loads and builds the trained language models, their vocab and indices, given path and models' names.
     """
     built_models = []
-
-    tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
-    
     model_path = os.path.join(path, models[0])
-    model = pipeline('text-generation', model=model_path, tokenizer='gpt2', device = conf.DEVICE, pad_token_id=tokenizer.eos_token_id)
-    built_models.append(model)
-
+	
     model = GPT2LMHeadModel.from_pretrained(model_path)
+    tokenizer = GPT2Tokenizer.from_pretrained(model_path)
+    pipe = pipeline('text-generation', model=model, tokenizer=tokenizer, device = conf.DEVICE, pad_token_id=tokenizer.eos_token_id)
+	
+    built_models.append(pipe)
     built_models.append(model)
-
-    built_models.append(tokenizer)
+    built_models.append(tokenizer) # references to all three will be needed
 
     return [built_models]
 
