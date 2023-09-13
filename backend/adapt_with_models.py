@@ -157,8 +157,8 @@ def adapt_poem_with_models(poem,
 def load_roberta_models(model_names):
     loads = []
     for model_name in model_names:
-        loads.append(pipeline("fill-mask", model = os.path.join(conf.MODELS_ROB_PATH, model_name), 
-                                           tokenizer = os.path.join(conf.MODELS_ROB_PATH, model_name), 
+        loads.append(pipeline("fill-mask", model = conf.MODELS_ROB_PATH + '/' + model_name, # os.path.join(conf.MODELS_ROB_PATH, model_name), 
+                                           tokenizer = conf.MODELS_ROB_PATH + '/' + model_name, # os.path.join(conf.MODELS_ROB_PATH, model_name), 
                                            top_k=5))
     return loads
 
