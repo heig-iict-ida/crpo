@@ -8,7 +8,7 @@ Clone or download this repo in a folder named `crpo` at the root of your home fo
 
 Either: (1) create a conda environment with `conda create --name crpo python=3.8`, activate it with `conda activate crpo`, and install *torch*, *transformers*, *kivy*, and *nltk*, individually with `pip install`, or (2) simply run `conda env create -f crpo.yml` to create the environment with the necessary packages and then activate it with `conda activate crpo`.
 
-Download fine-tuned language models from [Switch Drive](https://drive.switch.ch/index.php/s/ICq06PM0od7cjrD), and unpack them into the `models` folder.  You should see 1 + 5 + 3 subfolders named 'gpt2-poetry-model-crpo' / 'art', 'life', 'love', 'nature', 'religion' / 'anger', 'happiness', 'sadness' (4.2 GB).
+The general language model [gpt2-poetry-model-crpo](https://huggingface.co/andreipb/gpt2-poetry-model-crpo) will be dowloaded from Huggingface on the first use of the system, but you still have to download manually eight fine-tuned language models from [Switch Drive](https://drive.switch.ch/index.php/s/ICq06PM0od7cjrD), and unpack them into respective subfolders within the `models` folder: 'art', 'life', 'love', 'nature', 'religion', 'anger', 'happiness', 'sadness' (3.5 GB total).
 
 From the command line, run `python main.py`, which opens the CRPO GUI, which should then be self-explanatory.
 
