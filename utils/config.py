@@ -94,7 +94,7 @@ DEVICE = -1
 home = os.path.expanduser('~')
 cpao_root = os.path.join(home, 'crpo')
 
-MODELS_GENERAL_PATH = os.path.join(cpao_root, 'models')
+MODELS_GENERAL_PATH = 'andreipb' # using Huggingface model instead of local folder: os.path.join(cpao_root, 'models')
 MODELS_ROB_PATH = os.path.join(cpao_root, 'models')
 OUTPUT_DIRECTORY_FILE = os.path.join(cpao_root, 'logs')
 RIME_PICKLE_FILE = os.path.join(cpao_root, 'utils/data', 'rhyming_dictionaries.pickle')
