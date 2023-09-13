@@ -68,8 +68,19 @@ Config.write()
 
 #Models used in generation and adaptation of poems
 MAIN_MODEL = ['gpt2-poetry-model-crpo']
-THEMATIC_ROBERTA_MODELS = ['love', 'art', 'nature', 'religion', 'life']
-EMOTION_ROBERTA_MODELS = ['happiness', 'sadness', 'anger']
+# THEMATIC_ROBERTA_MODELS = ['love', 'art', 'nature', 'religion', 'life']
+# EMOTION_ROBERTA_MODELS = ['happiness', 'sadness', 'anger']
+
+# change local models to Huggingface ones
+THEMATIC_ROBERTA_MODELS = ['roberta-poetry-art-crpo', 
+                           'roberta-poetry-life-crpo', 
+                           'roberta-poetry-love-crpo', 
+                           'roberta-poetry-nature-crpo', 
+                           'roberta-poetry-religion-crpo']
+EMOTION_ROBERTA_MODELS  = ['roberta-poetry-happiness-crpo', 
+                           'roberta-poetry-sadness-crpo', 
+                           'roberta-poetry-anger-crpo']
+
 
 THEMATIC_MODELS = ['amour_classified',  # deprecated in the English version
                    'art_classified', 
@@ -95,7 +106,7 @@ home = os.path.expanduser('~')
 cpao_root = os.path.join(home, 'crpo')
 
 MODELS_GENERAL_PATH = 'andreipb' # using Huggingface model instead of local folder: os.path.join(cpao_root, 'models')
-MODELS_ROB_PATH = os.path.join(cpao_root, 'models')
+MODELS_ROB_PATH = 'andreipb' # using Huggingface model instead of local folder: os.path.join(cpao_root, 'models')
 OUTPUT_DIRECTORY_FILE = os.path.join(cpao_root, 'logs')
 RIME_PICKLE_FILE = os.path.join(cpao_root, 'utils/data', 'rhyming_dictionaries.pickle')
 EMOTIONS_WORDS_LIST_FILE = os.path.join(cpao_root, 'utils/data', 'emotion_word_list.txt')
