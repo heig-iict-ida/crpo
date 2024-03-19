@@ -105,8 +105,8 @@ DEVICE = -1
 home = os.path.expanduser('~')
 cpao_root = os.path.join(home, 'crpo')
 
-MODELS_GENERAL_PATH = 'andreipb' # using Huggingface model instead of local folder: os.path.join(cpao_root, 'models')
-MODELS_ROB_PATH = 'andreipb' # using Huggingface model instead of local folder: os.path.join(cpao_root, 'models')
+MODELS_GENERAL_PATH = 'andreipb' # andreipb is the public user name on HF (to use local folder, use: os.path.join(cpao_root, 'models'))
+MODELS_ROB_PATH = 'andreipb' # this will download HF models provided by andreipb (also here, for local folder, use: os.path.join(cpao_root, 'models'))
 OUTPUT_DIRECTORY_FILE = os.path.join(cpao_root, 'logs')
 RIME_PICKLE_FILE = os.path.join(cpao_root, 'utils/data', 'rhyming_dictionaries.pickle')
 EMOTIONS_WORDS_LIST_FILE = os.path.join(cpao_root, 'utils/data', 'emotion_word_list.txt')
